@@ -4,3 +4,5 @@
 *.txtkeys linguist-language=XML
 *.xml linguist-language=XML
 *.zt2 linguist-language=XML
+
+*.fx linguist-language=C++

@@ -1,0 +1,6 @@
+*.beh linguist-language=XML
+*.bfmat linguist-language=XML
+*.tsk linguist-language=XML
+*.txtkeys linguist-language=XML
+*.xml linguist-language=XML
+*.zt2 linguist-language=XML

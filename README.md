@@ -1,1 +1,1 @@
-# ZT2-mod-template
+# Rhino Scenario

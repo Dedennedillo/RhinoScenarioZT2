@@ -4,6 +4,7 @@ include("scenario/scripts/entity.lua")
 include("scenario/scripts/needs.lua")
 include("scenario/scripts/economy.lua")
 include("scenario/scripts/token.lua")
+
 include("scripts/Utils.lua")
 
 RHINO_TYPE = "RhinocerosJavan"
@@ -53,4 +54,14 @@ function checkRhinosPresent()
     local currentRhinoIds = split(createRhinoIdListString(), ",")
 
     return checkSubset(storedRhinoIds, currentRhinoIds)
+end
+
+--- WIP - Turns a list of entity ID strings into entities
+--- @param IdList table
+--- @return table
+function getEntitiesFromIdList(IdList)
+    for i = 1, table.getn(IdList) do
+        local entityId = resolveTable(IdList[i])
+        local entity findEntityByID(entityId)
+    end
 end

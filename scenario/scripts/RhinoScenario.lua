@@ -5,6 +5,7 @@ include("scenario/scripts/needs.lua")
 include("scenario/scripts/economy.lua")
 include("scenario/scripts/token.lua")
 include("scripts/RhinoUtils.lua")
+include("scripts/Utils.lua")
 
 function debugSetup()
     -- Add testing scripts here for debugging

@@ -81,6 +81,7 @@ end
 
 --- Log to output
 --- @param message string
+--- @param loglevel string
 function log.log(message, loglevel)
     if getglobalvarr("ENV_MODE") == "development" then
         print(os.date("[%Y-%m-%d %H:%M:%S] ") .. "[" .. loglevel .. "] " .. message)

@@ -5,28 +5,12 @@ include("scenario/scripts/needs.lua")
 include("scenario/scripts/economy.lua")
 include("scenario/scripts/token.lua")
 
-ENV_MODE = "development" -- development | production
 RHINO_TYPE = "RhinocerosJavan"
-
-function debugSetup()
-    -- Add testing scripts here for debugging
-end
-
---- Main scenario evaluation
---- @return number
-function rhinoMain(scenario)
-    try {function()
-        if ENV_MODE == "development" then
-            debugSetup()
-        end
-
-        checkRhinoVar()
-    end}
-end
+RHINO_IDS = "RHINO_IDS"
 
 --- Initialises rhino ids
-function checkRhinoVar()
-    if getglobalvar("RHINO_IDS") ~= nil then
+function initRhinoVar()
+    if getglobalvar(RHINO_IDS) ~= nil then
         setRhinoVar()
     end
 end
@@ -34,7 +18,7 @@ end
 --- Sets rhino ids to global variable
 function setRhinoVar()
     local rhinoIds = createRhinoIdListString()
-    setglobalvar("RHINO_IDS", rhinoIds)
+    setglobalvar(RHINO_IDS, rhinoIds)
 end
 
 --- Creates a new string containing all rhino ids
@@ -58,14 +42,15 @@ end
 --- Checks if all the rhinos in the global variable are still present in the game
 --- @return boolean
 function checkRhinosPresent()
-    if getglobalvar("RHINO_IDS") == nil then
+    if getglobalvar(RHINO_IDS) == nil then
         return true
     end
 
-    -- WIP
-end
+    local storedRhinoIds = split(getglobalvar(RHINO_IDS), ",")
+    local currentRhinoIds = split(createRhinoIdListString(), ",")
 
--- Utility functions
+    return checkSubset(storedRhinoIds, currentRhinoIds)
+end
 
 --- Logger class
 log = {}
@@ -73,38 +58,32 @@ log = {}
 --- Log debug to output
 --- @param message string
 function log.debug(message)
-    if ENV_MODE == "development" then
-        print(os.date("[%Y-%m-%d %H:%M:%S] ") .. "[DEBUG] " .. message)
-        io.flush()
-    end
-
+    log.log(message, "DEBUG")
 end
 
 --- Log error to output
 --- @param message string
 function log.error(message)
-    if ENV_MODE == "development" then
-        print(os.date("[%Y-%m-%d %H:%M:%S] ") .. "[ERROR] " .. message)
-        io.flush()
-    end
-
+    log.log(message, "ERROR")
 end
 
 --- Log info to output
 --- @param message string
 function log.info(message)
-    if ENV_MODE == "development" then
-        print(os.date("[%Y-%m-%d %H:%M:%S] ") .. "[INFO] " .. message)
-        io.flush()
-    end
-
+    log.log(message, "INFO")
 end
 
 --- Log warning to output
 --- @param message string
 function log.warn(message)
-    if ENV_MODE == "development" then
-        print(os.date("[%Y-%m-%d %H:%M:%S] ") .. "[WARN] " .. message)
+    log.log(message, "WARN")
+end
+
+--- Log to output
+--- @param message string
+function log.log(message, loglevel)
+    if getglobalvarr("ENV_MODE") == "development" then
+        print(os.date("[%Y-%m-%d %H:%M:%S] ") .. "[" .. loglevel .. "] " .. message)
         io.flush()
     end
 end
@@ -117,7 +96,7 @@ function try(func)
     -- Catch
     if not status then
         log.error(exception)
-        if ENV_MODE == "development" then
+        if getglobalvarr("ENV_MODE") == "development" then
             -- Show exception in the message panel in-game
             local increment = 50
             for i = 0, string.len(exception), increment do
@@ -142,4 +121,17 @@ function split(stringValue, delimiter)
     end
     table.insert(result, string.sub(stringValue, from))
     return result
+end
+
+--- checks of a table is a subset of another
+--- @param subsetTable table
+--- @param largeTable table
+--- @return boolean
+function checkSubset(subsetTable, largeTable)
+    for element, _ in pairs(subsetTable) do
+        if not largeTable[element] then
+            return false
+        end
+    end
+    return true
 end
